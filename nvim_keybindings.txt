@@ -1,0 +1,285 @@
+NVIM KEYBINDINGS (extracted from your pasted config)
+==================================================
+
+Legend:
+- n  = Normal mode
+- v  = Visual mode
+- x  = Visual (select) mode
+- i  = Insert mode
+- (Telescope UI) / (MiniFiles buffer) / (Oil buffer) = only active inside that plugin UI/buffer
+
+--------------------------------------------------
+CORE (lua/stefan/core/keymaps.lua)
+--------------------------------------------------
+
+LaTeX / Vimtex
+- n  <leader>lv  -> latex_view_in_split                         (LaTeX: compile + view in split)
+- n  <leader>ll  -> :VimtexCompile<CR>
+- n  <leader>lv  -> :VimtexView<CR>                              (NOTE: overrides earlier <leader>lv)
+
+Editing / movement
+- v  J           -> :m '>+1<CR>gv=gv                             (moves lines down in visual selection)
+- v  K           -> :m '<-2<CR>gv=gv                             (moves lines up in visual selection)
+- n  J           -> mzJ'z
+- n  <C-d>       -> <C-d>zz                                      (move down centered)
+- n  <C-u>       -> <C-u>zz                                      (move up centered)
+- n  n           -> nzzzv
+- n  N           -> Nzzzv
+- v  <           -> <gv
+- v  >           -> >gv
+
+Clipboard / registers
+- x  <leader>p   -> [["_dP]]
+- v  p           -> "_dp
+- n  <leader>Y   -> [["+Y]]
+- n,v <leader>d  -> [["_d]]
+
+Utility
+- n  <C-c>       -> :nohl<CR>                                    (Clear search hl)
+- n  <leader>f   -> vim.lsp.buf.format
+- n  <C-f>       -> :silent !tmux neww tmux-sessionizer<CR>
+- n  x           -> "_x
+- n  <leader>s   -> :%s/\<<C-r><C-w>\>/<C-r><C-w>/gI...        (Replace word under cursor globally)
+- n  <leader>x   -> :!chmod +x %<CR>                             (makes file executable)
+
+Tabs
+- n  <leader>to  -> :tabnew<CR>
+- n  <leader>tx  -> :tabclose<CR>
+- n  <leader>tn  -> :tabn<CR>
+- n  <leader>tp  -> :tabp<CR>
+- n  <leader>tf  -> :tabnew %<CR>
+
+Splits
+- n  <leader>sv  -> <C-w>v                                       (Split window vertically)
+- n  <leader>sh  -> <C-w>s                                       (Split window horizontally)
+- n  <leader>se  -> <C-w>=                                       (Make splits equal size)
+- n  <leader>sx  -> :close<CR>                                   (Close current split)
+
+Other (RHS not pasted)
+- n  <leader>fp  -> function() ... end
+- n  <leader>lx  -> function() ... end
+
+--------------------------------------------------
+LSP (lua/stefan/plugins/lsp/lspconfig.lua)
+--------------------------------------------------
+
+Buffer-local LSP mappings (active when LSP attaches)
+
+- n  gR          -> Telescope lsp_references
+- n  gD          -> vim.lsp.buf.declaration
+- n  gd          -> Telescope lsp_definitions
+- n  gi          -> Telescope lsp_implementations
+- n  gt          -> Telescope lsp_type_definitions
+- n,v <leader>vca-> vim.lsp.buf.code_action()
+- n  <leader>rn  -> vim.lsp.buf.rename
+- n  <leader>D   -> Telescope diagnostics bufnr=0
+- n  <leader>d   -> vim.diagnostic.open_float                    (NOTE: conflicts with core <leader>d delete-without-yank)
+- n  K           -> vim.lsp.buf.hover
+- n  <leader>rs  -> :LspRestart<CR>
+- i  <C-h>       -> vim.lsp.buf.signature_help()
+
+--------------------------------------------------
+Undotree (lua/stefan/plugins/undotree.lua)
+--------------------------------------------------
+- n  <leader>u   -> :UndotreeToggle
+
+--------------------------------------------------
+Git (lua/stefan/plugins/gitstuff.lua)
+--------------------------------------------------
+- n  <leader>gg  -> :Git
+- n  <leader>P   -> function() ... end                           (RHS not pasted)
+- n  <leader>p   -> function() ... end                           (RHS not pasted)
+- n  <leader>t   -> :Git push -u origin ...                       (prompts/continues)
+
+--------------------------------------------------
+Oil (lua/stefan/plugins/oil.lua)
+--------------------------------------------------
+
+Global
+- n  -           -> :Oil<CR>                                     (Open parent directory)
+- n  <leader>-   -> require("oil").toggle_float
+
+Oil buffer internal mappings
+- (Oil buffer) <C-h> -> disabled
+- (Oil buffer) <C-c> -> disabled
+- (Oil buffer) <M-h> -> actions.select_split
+- (Oil buffer) q     -> actions.close
+
+--------------------------------------------------
+Todo-comments (lua/stefan/plugins/todo-comments.lua)
+--------------------------------------------------
+- n  ]t          -> next todo comment (function)
+- n  [t          -> prev todo comment (function)
+
+--------------------------------------------------
+Mini.nvim (lua/stefan/plugins/mini.lua)
+--------------------------------------------------
+
+MiniFiles global
+- n  <leader>ee  -> MiniFiles.open()                              (Toggle mini file explorer)
+- n  <leader>ef  -> open explorer at current file + reveal cwd
+
+MiniFiles buffer internal mappings
+- (MiniFiles buffer) <CR> -> go in
+- (MiniFiles buffer) L    -> go in_plus
+- (MiniFiles buffer) -    -> go out
+- (MiniFiles buffer) H    -> go out_plus
+
+Trailspace
+- n  <leader>cw  -> trim trailing whitespace                      (Erase Whitespace)
+
+SplitJoin
+- n,x sj         -> join arguments                                (Join arguments)
+- n,x sk         -> split arguments                               (Split arguments)
+
+--------------------------------------------------
+Linting (lua/stefan/plugins/linting.lua)
+--------------------------------------------------
+- n  <leader>l   -> lint.try_lint()                               (Trigger linting for current file)
+
+--------------------------------------------------
+Emmet (lua/stefan/plugins/emmet.lua)
+--------------------------------------------------
+- n,v <leader>xe -> wrap with abbreviation (nvim-emmet)
+
+--------------------------------------------------
+Auto-session (lua/stefan/plugins/auto-sessions.lua)
+--------------------------------------------------
+- n  <leader>wr  -> :SessionRestore<CR>                           (Restore session for cwd)
+- n  <leader>ws  -> :SessionSave<CR>                              (Save session for cwd)
+
+--------------------------------------------------
+Git worktree (lua/stefan/plugins/gitworktree.lua)
+--------------------------------------------------
+- n  <leader>wl  -> function() ... end                            (RHS not pasted)
+- n  <leader>wc  -> function() ... end                            (RHS not pasted)
+
+--------------------------------------------------
+Formatting (lua/stefan/plugins/fromatting.lua / conform)
+--------------------------------------------------
+- n,v <leader>mp -> conform.format(...)                           (Format whole file or range)
+
+--------------------------------------------------
+Folding (lua/stefan/plugins/nvim-ufo.lua)
+--------------------------------------------------
+- n  zR          -> open all folds
+- n  zM          -> close all folds
+
+--------------------------------------------------
+Telescope (lua/stefan/plugins/telescope.lua)
+--------------------------------------------------
+
+Telescope UI (inside picker prompt)
+- (Telescope UI) i  <C-k> -> move selection previous
+- (Telescope UI) i  <C-j> -> move selection next
+
+Global
+- n  <leader>pr  -> Telescope oldfiles                            (Fuzzy find recent files)
+- n  <leader>pWs -> grep connected WORD under cursor              (Find Connected Words under cursor)
+- n  <leader>ths -> Telescope themes                              (Theme Switcher)
+
+--------------------------------------------------
+Treesitter incremental selection (nvim-treesitter)
+--------------------------------------------------
+- n  <C-space>   -> init selection
+- n  <C-space>   -> node incremental (expand selection)
+- scope_incremental disabled
+
+--------------------------------------------------
+Trouble (folke/trouble.nvim)
+--------------------------------------------------
+- n  <leader>xw  -> Trouble diagnostics toggle                     (workspace)
+- n  <leader>xd  -> Trouble diagnostics toggle filter.buf=0        (document)
+- n  <leader>xq  -> Trouble quickfix toggle
+- n  <leader>xl  -> Trouble loclist toggle
+- n  <leader>xt  -> Trouble todo toggle
+
+--------------------------------------------------
+Harpoon2 (thePrimeagen/harpoon) - normal mode
+--------------------------------------------------
+- n  <leader>a   -> add current file to Harpoon                    (Harpoon add file)
+- n  <C-e>       -> toggle Harpoon quick menu
+
+Select harpoon items
+- n  <C-y>       -> select item 1
+- n  <C-i>       -> select item 2
+- n  <C-n>       -> select item 3
+- n  <C-s>       -> select item 4
+
+Cycle items
+- n  <C-S-P>     -> previous Harpoon item
+- n  <C-S-N>     -> next Harpoon item
+
+--------------------------------------------------
+Img-clip (HakonHarnes/img-clip.nvim)
+--------------------------------------------------
+- n  <leader>pi  -> :PasteImage<CR>                               (Paste image from system clipboard)
+
+--------------------------------------------------
+Snacks.nvim (folke/snacks.nvim)
+--------------------------------------------------
+
+Global (lazy keys)
+- n  <leader>lg  -> snacks.lazygit()                              (Lazygit)
+- n  <leader>gl  -> snacks.lazygit.log()                          (Lazygit Logs)
+- n  <leader>rN  -> snacks.rename.rename_file()                   (Fast Rename Current File)
+- n  <leader>dB  -> snacks.bufdelete()                            (Delete/Close Buffer confirm)
+
+Snacks Picker
+- n  <leader>pf  -> picker.files()                                (Find Files)
+- n  <leader>pc  -> picker.files(cwd=config)                      (Find Config File)
+- n  <leader>ps  -> picker.grep()                                 (Grep word)
+- n,x <leader>pws-> picker.grep_word()                            (Search selection/word)
+- n  <leader>pk  -> picker.keymaps(layout=ivy)                    (Search Keymaps)
+
+Git branches
+- n  <leader>gbr -> picker.git_branches(layout=select)            (Pick/Switch branches)
+
+Misc
+- n  <leader>th  -> picker.colorschemes(layout=ivy)               (Pick Color Schemes)
+- n  <leader>vh  -> picker.help()                                 (Help Pages)
+
+Snacks Input UI (inside snacks input popup)
+- (Snacks input) n  <C-c> -> cmp_close + cancel
+- (Snacks input) i  <C-c> -> cmp_close + stopinsert
+
+--------------------------------------------------
+Todo-comments via Snacks
+--------------------------------------------------
+- n  <leader>pt  -> snacks.picker.todo_comments()                 (Todo)
+- n  <leader>pT  -> snacks.picker.todo_comments(keywords=TODO/FIX/FIXME)
+
+--------------------------------------------------
+nvim-cmp (completion) - insert/snippet mappings (not vim.keymap.set)
+--------------------------------------------------
+- i,s <BS>       -> smart backspace
+- i,s <C-b>      -> scroll docs up
+- i,s <C-f>      -> scroll docs down
+- i,s <C-e>      -> abort completion
+- i,s <C-j>      -> next item
+- i,s <C-k>      -> prev item
+- i,s <C-n>      -> next item
+- i,s <C-p>      -> prev item
+- i,s <Down>     -> next item
+- i,s <Up>       -> prev item
+- i,s <C-y>      -> confirm completion (custom)
+- i,s <Tab>      -> smart tab / cmp select / snippet jump / complete
+- i,s <S-Tab>    -> reverse select / snippet jump back / dedent
+
+==================================================
+NOTES / CONFLICTS
+==================================================
+
+1) <leader>d is defined twice:
+- core: delete without yanking
+- LSP: diagnostics float
+=> In LSP-attached buffers, <leader>d will likely show diagnostics float.
+
+2) <leader>lv is defined twice in LaTeX keymaps:
+- latex_view_in_split
+- VimtexView
+=> The later one overrides earlier.
+
+3) You now have both Telescope and Snacks pickers:
+- Telescope: <leader>pr, <leader>pWs, <leader>ths
+- Snacks: <leader>pf, <leader>ps, <leader>pk, <leader>pc, <leader>pws, etc.
