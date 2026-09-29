@@ -102,7 +102,31 @@ return {
             -- but stated explicitly here for clarity.
             automatic_enable = true,
         })
+        vim.lsp.config("clangd", {
+          cmd = {
+            "clangd",
+            "--background-index",
+            "--query-driver=/usr/bin/g++,/usr/bin/gcc",
+            "--completion-style=bundled",
+            "--header-insertion=never",
+            "--function-arg-placeholders=0",
+          },
+        })
+        vim.diagnostic.config({
+          virtual_text = false,
+          underline = true,
+          signs = true,
+          severity_sort = true,
+          update_in_insert = false,
+          float = {
+            border = "rounded",
+            source = true,
+          },
+        })
 
+        vim.keymap.set("n", "gl", vim.diagnostic.open_float, {
+          desc = "Show diagnostic",
+        })
         -- Non-LSP tools only.
         mason_tool_installer.setup({
             ensure_installed = {

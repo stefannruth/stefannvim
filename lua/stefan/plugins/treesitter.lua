@@ -1,108 +1,65 @@
 return {
-    {
-        "nvim-treesitter/nvim-treesitter",
-        branch = "main",
-        lazy = false,
-        build = ":TSUpdate",
+	"nvim-telescope/telescope.nvim",
+	branch = "master",
 
-        init = function()
-            local group = vim.api.nvim_create_augroup("treesitter_setup", { clear = true })
+	dependencies = {
+		"nvim-lua/plenary.nvim",
+		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+		"nvim-tree/nvim-web-devicons",
+		"andrew-george/telescope-themes",
+	},
 
-            vim.api.nvim_create_autocmd("FileType", {
-                group = group,
-                callback = function()
-                    -- Enable Treesitter highlighting when a parser is available.
-                    local started = pcall(vim.treesitter.start)
+	config = function()
+		local telescope = require("telescope")
+		local actions = require("telescope.actions")
+		local builtin = require("telescope.builtin")
 
-                    -- Enable Treesitter indentation only for buffers where
-                    -- Treesitter successfully attached.
-                    if started then
-                        vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-                    end
-                end,
-            })
-        end,
+		telescope.setup({
+			defaults = {
+				path_display = { "smart" },
+				mappings = {
+					i = {
+						["<C-k>"] = actions.move_selection_previous,
+						["<C-j>"] = actions.move_selection_next,
+					},
+				},
+			},
 
-        config = function()
-            local treesitter = require("nvim-treesitter")
+			extensions = {
+				themes = {
+					enable_previewer = true,
+					enable_live_preview = true,
+					persist = {
+						enabled = true,
+						path = vim.fn.stdpath("config")
+							.. "/lua/colorscheme.lua",
+					},
+				},
+			},
+		})
 
-            -- Default setup is sufficient; this is included explicitly
-            -- so that the new API is visible in your config.
-            treesitter.setup({})
+		telescope.load_extension("fzf")
+		telescope.load_extension("themes")
 
-            local ensure_installed = {
-                "json",
-                "javascript",
-                "typescript",
-                "tsx",
-                "go",
-                "yaml",
-                "html",
-                "css",
-                "python",
-                "http",
-                "prisma",
-                "markdown",
-                "markdown_inline",
-                "svelte",
-                "graphql",
-                "bash",
-                "lua",
-                "vim",
-                "dockerfile",
-                "gitignore",
-                "query",
-                "vimdoc",
-                "c",
-                "java",
-                "rust",
-            }
+		vim.keymap.set(
+			"n",
+			"<leader>pr",
+			"<cmd>Telescope oldfiles<CR>",
+			{ desc = "Fuzzy find recent files" }
+		)
 
-            -- Replacement for the old ensure_installed option:
-            -- install only parsers that are not already present.
-            local already_installed =
-                require("nvim-treesitter.config").get_installed()
+		vim.keymap.set("n", "<leader>pWs", function()
+			builtin.grep_string({
+				search = vim.fn.expand("<cWORD>"),
+			})
+		end, { desc = "Find connected words under cursor" })
 
-            local parsers_to_install = vim.iter(ensure_installed)
-                :filter(function(parser)
-                    return not vim.tbl_contains(already_installed, parser)
-                end)
-                :totable()
-
-            if #parsers_to_install > 0 then
-                treesitter.install(parsers_to_install)
-            end
-        end,
-    },
-
-    -- JS / TS / JSX / TSX auto-close tags
-    {
-        "windwp/nvim-ts-autotag",
-        ft = {
-            "html",
-            "xml",
-            "javascript",
-            "typescript",
-            "javascriptreact",
-            "typescriptreact",
-            "svelte",
-        },
-        config = function()
-            require("nvim-ts-autotag").setup({
-                opts = {
-                    enable_close = true,
-                    enable_rename = true,
-                    enable_close_on_slash = false,
-                },
-                per_filetype = {
-                    html = {
-                        enable_close = true,
-                    },
-                    typescriptreact = {
-                        enable_close = true,
-                    },
-                },
-            })
-        end,
-    },
+		vim.keymap.set(
+			"n",
+			"<leader>ths",
+			"<cmd>Telescope themes<CR>",
+			{ silent = true, desc = "Theme switcher" }
+		)
+	end,
 }
+

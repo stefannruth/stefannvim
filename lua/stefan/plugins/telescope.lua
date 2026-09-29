@@ -1,11 +1,23 @@
 return {
 	"nvim-telescope/telescope.nvim",
-	branch = "0.1.x",
+	branch = "master",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 		"nvim-tree/nvim-web-devicons",
 		"andrew-george/telescope-themes",
+        {
+            "rafi/awesome-vim-colorschemes",
+            lazy = false,
+            priority = 1000,
+            config = function()
+                local persisted = pcall(require, "colorscheme")
+
+                if not persisted then
+                    vim.cmd("colorscheme gotham")
+                end
+            end,
+        },
 	},
 	config = function()
 		local telescope = require("telescope")
