@@ -29,6 +29,15 @@ return {
             capabilities = capabilities,
         })
 
+        vim.lsp.config("ocamllsp", {
+            cmd = function(dispatchers, config)
+                return vim.lsp.rpc.start({ "opam", "exec", "--", "ocamllsp" }, dispatchers, {
+                    cwd = config.root_dir,
+                })
+            end,
+        })
+        vim.lsp.enable("ocamllsp")
+
         -- Lua language server configuration.
         vim.lsp.config("lua_ls", {
             settings = {
@@ -100,7 +109,9 @@ return {
 
             -- This is enabled by default in mason-lspconfig v2,
             -- but stated explicitly here for clarity.
-            automatic_enable = true,
+            automatic_enable = {
+                exclude = { "hls", "ocamllsp" },
+            },
         })
         vim.lsp.config("clangd", {
           cmd = {

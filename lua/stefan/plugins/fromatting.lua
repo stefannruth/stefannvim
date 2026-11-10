@@ -6,6 +6,14 @@ return {
 
 		conform.setup({
 			formatters = {
+				ocamlformat = {
+					command = "opam",
+					prepend_args = { "exec", "--", "ocamlformat" },
+				},
+				["format-dune-file"] = {
+					command = "opam",
+					prepend_args = { "exec", "--", "dune" },
+				},
 				["markdown-toc"] = {
 					condition = function(_, ctx)
 						for _, line in ipairs(vim.api.nvim_buf_get_lines(ctx.buf, 0, -1, false)) do
@@ -25,6 +33,9 @@ return {
 				},
 			},
 			formatters_by_ft = {
+				ocaml = { "ocamlformat" },
+				ocamlinterface = { "ocamlformat" },
+				dune = { "format-dune-file" },
 				javascript = { "prettier" },
 				typescript = { "prettier" },
 				javascriptreact = { "prettier" },
@@ -66,7 +77,7 @@ return {
 
 		vim.keymap.set({ "n", "v" }, "<leader>mp", function()
 			conform.format({
-				lsp_fallback = true,
+				lsp_format = "fallback",
 				async = false,
 				timeout_ms = 1000,
 			})
